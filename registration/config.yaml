@@ -1,0 +1,22 @@
+# FoodHive ERP Configuration
+# Copy this file to config.yaml and update values as needed
+
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: bakri314
+  name: FoodHive
+  sslmode: disable
+
+jwt:
+  secret: foodhive-jwt-secret-2024
+
+storage:
+  host: localhost:9000
+  key: minioadmin
+  secret: minioadmin
+  ssl: false
+
+server:
+  port: 8080
