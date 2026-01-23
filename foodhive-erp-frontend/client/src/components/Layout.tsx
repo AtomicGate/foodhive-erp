@@ -83,8 +83,8 @@ export default function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuth();
 
   const NavContent = () => (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center h-16 px-6 border-b border-sidebar-border">
+    <div className="flex flex-col h-screen overflow-hidden">
+      <div className="flex items-center h-16 px-6 border-b border-sidebar-border shrink-0">
         <div className="flex items-center gap-2 font-bold text-xl text-primary">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
             FH
@@ -92,8 +92,8 @@ export default function Layout({ children }: LayoutProps) {
           FoodHive ERP
         </div>
       </div>
-      <ScrollArea className="flex-1 py-4">
-        <nav className="px-4 space-y-1">
+      <ScrollArea className="flex-1 overflow-auto">
+        <nav className="px-4 py-4 space-y-1">
           {(() => {
             let currentSection = "";
             return navItems.map((item, index) => {
@@ -127,7 +127,7 @@ export default function Layout({ children }: LayoutProps) {
           })()}
         </nav>
       </ScrollArea>
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-sidebar-border shrink-0">
         <div className="flex items-center gap-3 px-3 py-2">
           <Avatar className="w-8 h-8">
             <AvatarImage src="https://github.com/shadcn.png" />
@@ -160,9 +160,9 @@ export default function Layout({ children }: LayoutProps) {
       </Sheet>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
+      <div className="flex-1 lg:ml-64 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20 px-6 flex items-center justify-between">
+        <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shrink-0 z-20 px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsMobileOpen(true)}>
               <Menu className="w-5 h-5" />
@@ -216,7 +216,7 @@ export default function Layout({ children }: LayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 overflow-auto p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             {children}
           </div>

@@ -1,7 +1,7 @@
 -- =====================================================
--- INSERT DEFAULT ADMIN EMPLOYEE
+-- FoodHive ERP System - Default Admin Employee
+-- Version: 2.0 ENHANCED
 -- =====================================================
--- This script creates a default admin employee for initial setup
 -- Run this after 004_insert_roles.sql
 -- IMPORTANT: Change the password after first login!
 
@@ -15,6 +15,7 @@ INSERT INTO employees (
     english_name, 
     arabic_name,
     role_id,
+    department_id,
     status,
     account_status,
     security_level,
@@ -29,6 +30,7 @@ SELECT
     'System Administrator',
     'مدير النظام',
     (SELECT id FROM roles WHERE role_name = 'Super Admin' LIMIT 1),
+    1,  -- Default department
     'CONTINUED',
     'active',
     10,  -- Highest security level
@@ -41,13 +43,49 @@ WHERE NOT EXISTS (SELECT 1 FROM employees WHERE id = 1)
 -- Reset the sequence for employees to ensure next insert gets id=2
 SELECT setval('employees_id_seq', COALESCE((SELECT MAX(id) FROM employees), 1), true);
 
+-- Create employee details for admin
+INSERT INTO employee_details (employee_id, job_title, notes)
+SELECT 1, 'System Administrator', 'Default admin account - Please update password!'
+WHERE EXISTS (SELECT 1 FROM employees WHERE id = 1)
+  AND NOT EXISTS (SELECT 1 FROM employee_details WHERE employee_id = 1);
+
+-- Create employee finances record for admin
+INSERT INTO employee_finances (employee_id)
+SELECT 1
+WHERE EXISTS (SELECT 1 FROM employees WHERE id = 1)
+  AND NOT EXISTS (SELECT 1 FROM employee_finances WHERE employee_id = 1);
+
 -- Verify admin employee was created
 SELECT 
-    id, 
-    email, 
-    english_name, 
-    role_id,
-    status,
-    account_status
-FROM employees 
-WHERE id = 1;
+    e.id, 
+    e.email, 
+    e.english_name, 
+    r.role_name,
+    e.status,
+    e.account_status,
+    e.security_level
+FROM employees e
+LEFT JOIN roles r ON e.role_id = r.id
+WHERE e.id = 1;
+
+-- Give admin full permissions on all pages
+INSERT INTO emp_page (user_id, page_id, can_create, can_update, can_delete, can_view)
+SELECT 1, p.id, true, true, true, true
+FROM pages p
+WHERE EXISTS (SELECT 1 FROM employees WHERE id = 1)
+  AND NOT EXISTS (
+    SELECT 1 FROM emp_page ep WHERE ep.user_id = 1 AND ep.page_id = p.id
+);
+
+-- Show admin permissions
+SELECT 
+    p.page_name,
+    p.route_name,
+    ep.can_create,
+    ep.can_update,
+    ep.can_delete,
+    ep.can_view
+FROM emp_page ep
+JOIN pages p ON ep.page_id = p.id
+WHERE ep.user_id = 1
+ORDER BY p.page_name;
