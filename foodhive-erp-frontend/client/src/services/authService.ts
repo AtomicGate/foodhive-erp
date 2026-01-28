@@ -2,8 +2,8 @@ import api from '@/lib/api';
 
 export const authService = {
   login: async (credentials: { email: string; password: string }) => {
-    // Backend expects POST /login with { email, password }
-    const response = await api.post('/login', credentials);
+    // Backend expects POST /v1/auth/login with { email, password }
+    const response = await api.post('/v1/auth/login', credentials);
     return response.data;
   },
   logout: () => {

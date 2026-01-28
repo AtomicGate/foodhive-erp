@@ -46,7 +46,7 @@ func Router(
 	// ===========================================
 	// Authentication (No auth required)
 	// ===========================================
-	app.Post("/login", login.Handler(jwtService, db))
+	app.Mount("/auth", login.Router(db, jwtService))
 
 	// ===========================================
 	// Phase 1: Foundation - Master Data

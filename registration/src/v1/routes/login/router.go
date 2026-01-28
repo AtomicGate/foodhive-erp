@@ -6,15 +6,12 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func Router(secretKey string, db postgres.Executor) chi.Router {
+// Router creates the login routes (public - no auth middleware)
+func Router(db postgres.Executor, jwtService jwt.JWTService) chi.Router {
+	r := chi.NewRouter()
 
-	app := chi.NewRouter()
+	// Login endpoint - no authentication required (public)
+	r.Post("/login", Handler(jwtService, db))
 
-	// Initialize your custom JWT service with the secret key
-	jwtService := jwt.New(secretKey)
-
-	// Pass jwtService and db to the Handler
-	app.Post("/login", Handler(jwtService, db))
-
-	return app
+	return r
 }
